@@ -1,25 +1,19 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import '../dio_data_source.dart';
 
- getUsers() async {
-  var url = Uri.https('reqres.in', '/api/users?page=2');
-  var response = await http.get(url);
+List<User> users = [];
 
-  if (response.statusCode <= 300) {
-    var jsonResponse =
-        convert.jsonDecode(response.body) as Map<String, dynamic>;
-    // List usersRes = jsonResponse['data'];
+Future<List<User>> getUsers() async {
+  var response = await Source().getUsers();
 
-    // for (var x = 0; x < usersRes.length; x++) {
-    //   users.add(User.fromJson(usersRes[x]));
-    // }
-    // print(jsonResponse);
-  return jsonResponse;
+  var userList = response.data['data'] as List;
 
+  for(var x =0; x < userList.length; x++){
+    users.add(User.fromJson(userList[x]));
   }
-
-  return null;
+  return users;
 }
 
 createUser(String name, String jobAppliedFor) async {
@@ -29,12 +23,26 @@ createUser(String name, String jobAppliedFor) async {
   if (response.statusCode <= 300) {
     var jsonResponse =
         convert.jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonResponse);
-        return 'User ${jsonResponse['name']} created';
+    print(jsonResponse);
+    return 'User ${jsonResponse['name']} created';
   }
 
-return 'Creating user failed';
-  
+  return 'Creating user failed';
 }
 
+class User {
+  final int id;
+  final String email;
+  final String first_name;
+  final String last_name;
+  final String avatar;
 
+  User(this.id, this.email, this.first_name, this.last_name, this.avatar);
+
+  User.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        email = json["email"],
+        first_name = json["first_name"],
+        last_name = json["last_name"],
+        avatar = json["avatar"];
+}

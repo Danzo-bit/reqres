@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vibes_n_friends/service/data_source/data_source.dart';
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -29,36 +28,39 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            // Text(local[0].firstName)
-            FutureBuilder(
-              future: getUsers(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: [
-                      Text((snapshot.data as Map)['data'][0]['name']),
-                      Text((snapshot.data as Map)['data'][1]['name']),
-                      Text((snapshot.data as Map)['data'][2]['name']),
-                      Text((snapshot.data as Map)['data'][3]['name']),
-
-                    ],
-                  );
-                }
-                return Text('loading...');
-              },
-            )
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'You have pushed the button this many times:',
+              ),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              // Text(local[0].firstName)
+              FutureBuilder(
+                future: getUsers(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(children: [
+                      for (int x = 0; x < snapshot.data!.length; x++)
+                        Column(
+                          children: [
+                            Text(snapshot.data![x].email),
+                            Image.network(snapshot.data![x].avatar),
+                          ],
+                        ),
+                      
+                    ]);
+                  }
+                  return Text('loading...');
+                },
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
