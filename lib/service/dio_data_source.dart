@@ -44,5 +44,10 @@ class Source{
     var result = await service.request("/api/users?page=2", method: 'GET');
     return result;
   }
+
+ Future createUser(String name, String jobAppliedFor) async {
+  var result = await service.request('/api/users', method: 'POST', body: {"name": name, "job": jobAppliedFor});
+  return result;
+ }
 }
 

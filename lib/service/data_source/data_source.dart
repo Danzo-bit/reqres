@@ -1,5 +1,3 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
 
 import '../dio_data_source.dart';
 
@@ -17,17 +15,10 @@ Future<List<User>> getUsers() async {
 }
 
 createUser(String name, String jobAppliedFor) async {
-  var url = Uri.https('reqres.in', '/api/users');
   var response =
-      await http.post(url, body: {"name": name, "job": jobAppliedFor});
-  if (response.statusCode <= 300) {
-    var jsonResponse =
-        convert.jsonDecode(response.body) as Map<String, dynamic>;
-    print(jsonResponse);
-    return 'User ${jsonResponse['name']} created';
-  }
-
-  return 'Creating user failed';
+      await Source().createUser(name, jobAppliedFor);
+  
+  return response.data;
 }
 
 class User {
